@@ -1,0 +1,27 @@
+{
+  "location": {
+    "front": -11,
+    "left": 11
+  },
+  "absoluteEncoderOffset": -0.349609375,
+  "drive": {
+    "type": "sparkflex",
+    "id": 2,
+    "canbus": "rio"
+  },
+  "inverted": {
+    "drive": true,
+    "angle": true
+  },
+  "angle": {
+    "type": "sparkflex",
+    "id": 3,
+    "canbus": "rio"
+  },
+  "encoder": {
+    "type": "throughbore",
+    "id": 10,
+    "canbus": "rio"
+  },
+  "absoluteEncoderInverted": false
+}
