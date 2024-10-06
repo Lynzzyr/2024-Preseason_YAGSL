@@ -25,7 +25,7 @@ public class RobotContainer {
     private final CommandXboxController m_secondaryController;
 
     // Drivetrain
-    private final SwerveParser yagsl_parser;
+    private SwerveParser yagsl_parser;
     private final SwerveDriveConfiguration yagsl_config;
     private final SwerveControllerConfiguration yagsl_controller_config;
     private final Drivetrain sys_drivetrain;
@@ -36,7 +36,9 @@ public class RobotContainer {
         m_secondaryController = new CommandXboxController(kControllers.SECONDARY_CONTROLLER);
 
         // Drivetrain
-        yagsl_parser = new SwerveParser(new File(Filesystem.getDeployDirectory(), "swerve"));
+        try {
+            yagsl_parser = new SwerveParser(new File(Filesystem.getDeployDirectory(), "swerve"));
+        } catch (Exception ignored) {}
         yagsl_config = new SwerveDriveConfiguration(new SwerveModuleConfiguration[] {
                     SwerveParser.moduleJsons[0].createModuleConfiguration(
                         SwerveParser.pidfPropertiesJson.angle,
