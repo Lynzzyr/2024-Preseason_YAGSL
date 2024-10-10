@@ -1,10 +1,16 @@
 package frc.robot.subsystems;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
@@ -87,6 +93,71 @@ public class PhotonVision extends SubsystemBase {
         if (instance == null) instance = new PhotonVision();
 
         return instance;
+    }
+
+    /**
+     * Returns whether all AprilTag targets are within an accepted range
+     * @param targets
+     * @param threshold
+     * @return True if yes to all, false if any are outside of range
+     */
+    public boolean areTargetsWithinRange(List<PhotonTrackedTarget> targets, double range) {
+        for (PhotonTrackedTarget target : targets) {
+            if (target.getPoseAmbiguity() >= range) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Return a pose estimate if camera is connected
+     * @param currentPose
+     * @param camera
+     * @param poseEstimator
+     * @param isEnabled
+     * @return Pose estimate if exists, else null
+     */
+    private Optional<EstimatedRobotPose> getUpdatedPoseEstimator(
+        SwerveDrivePoseEstimator currentPose,
+        PhotonCamera camera,
+        PhotonPoseEstimator poseEstimator,
+        boolean isEnabled
+    ) {
+        if (camera.isConnected()) {
+            Optional<EstimatedRobotPose> photonData = poseEstimator.update();
+
+            if (
+                photonData.isPresent() &&
+                areTargetsWithinRange(photonData.get().targetsUsed, kPhotonVision.TARGET_MAX_RANGE) &&
+                isEnabled
+            ) {
+                return photonData;
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Get an Optional of the robot position based on AprilTags.
+     * 
+     * @return An Optional EstimatedRobotPose. If AprilTag layout didn't load, returns null
+     */
+    public Optional<EstimatedRobotPose> getEstimatedGlobalPose(SwerveDrivePoseEstimator currentPose) {
+        Optional<EstimatedRobotPose>[] poseEstimates = new Optional[3];
+        poseEstimates[0] = getUpdatedPoseEstimator(currentPose, camFront, poseEstFront, camFrontEnabled);
+        poseEstimates[1] = getUpdatedPoseEstimator(currentPose, camTop, poseEstTop, camTopEnabled);
+        poseEstimates[2] = getUpdatedPoseEstimator(currentPose, camRear, poseEstRear, camRearEnabled);
+
+        // set things
+        boolean foundMultiTagReading = false;
+        double lowestRange = 1;
+        Optional<EstimatedRobotPose> poseEstimateOut = Optional.empty();
+
+        // iterate through things
+        for (Optional<EstimatedRobotPose> poseEstimate : poseEstimates) {
+            
+        }
     }
 
     @Override

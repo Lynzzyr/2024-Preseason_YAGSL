@@ -29,6 +29,7 @@ public final class Constants {
         public static final String APRILTAG_LAYOUT = AprilTagFields.k2024Crescendo.m_resourceFile;
         
         public static final double CALIBRATION_DISTANCE_TO_TRAP = 0;
+        public static final double TARGET_MAX_RANGE = 0.4;
 
         public static final class kCameras {
             public static final String CAMERA_FRONT_ID = "OV2311_FrontCamera";
