@@ -16,7 +16,7 @@ import swervelib.parser.SwerveDriveConfiguration;
 public class Drivetrain extends SwerveDrive implements Subsystem {
 
     // Subsystems
-    // private final PhotonVision sys_photonvision;
+    private final PhotonVision sys_photonvision;
     private final Limelight sys_limelight;
 
     // Shuffleboard & sim
@@ -31,7 +31,7 @@ public class Drivetrain extends SwerveDrive implements Subsystem {
         m_poseEstimator = this.swerveDrivePoseEstimator;
 
         // Subsystems
-        // sys_photonvision = PhotonVision.getInstance();
+        sys_photonvision = PhotonVision.getInstance();
         sys_limelight = Limelight.getInstance();
 
         // Shuffleboard & sim
